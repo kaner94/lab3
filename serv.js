@@ -5,7 +5,8 @@ var PORT = process.argv[2] || 5000;
 var ADDRESS = ip.address();
 var SID = 13325208;
 
-var ROOMS = new Array(); //this will be an array of arrays, the first element of each contains the room name
+var ROOMS = new Array(5); //this will be an array of arrays, the first element of each contains the room name
+ROOMS = [[],[],[],[],[]];
 var SOCKETS = new Array();
 var CLIENTS = new Array(); 
 
@@ -35,20 +36,25 @@ server.on("connection", function(socket) {
                         //         console.log("Element "+i+": " + dataIn[i]);
                         //         i++;
                         // }
-                        temp = dataIn[0].toString()
-                        temp = temp.substring(temp.indexOf(": ")+2);
-                        if(ROOMS.indexOf(temp) === -1){
-                                ROOMS.push(temp);
-                                console.log(temp);
-                                                        console.log(ROOMS.indexOf(temp)+"\n\n\n\n\n\n\n\n");
-                                                        console.log(ROOMS);
+                        temp = dataIn[1].toString();
+                        if(!roomExists(temp)){
+                                ROOMS[0].push(temp);
+                                console.log(ROOMS);
+                                //ROOMS.push(socket);
+                                //console.log(ROOMS);
+                                len = ROOMS[0].indexOf(temp);
+                                console.log(len);
+                                ROOMS[0].push(socket);
+                                console.log("IF Statement \n\n")
+                                console.log(ROOMS);
 
-                                len = ROOMS.indexOf(temp).length;
-                                ROOMS[ROOMS.indexOf(temp)].push(socket);
+                                //ROOMS[ROOMS.indexOf(temp)].push(socket);
                         }
-
-                        console.log(ROOMS);
-                        console.log(ROOMS[0]);
+                        // else{
+                        //         ROOMS[roomNumber(temp)].push(socket);
+                        //         console.log("Else Statement\n\n");
+                        //         console.log(ROOMS);
+                        // }
 
 
 
@@ -84,8 +90,28 @@ server.listen(PORT, ADDRESS, function() {
         console.log("Server listening to Port %s. Server Addess: %s", PORT, server.address().address);
 });
 
+function roomExists(name){
+        var i;
+        var tmp;
+        for(i = 0; i < ROOMS.length; i++){
+                if(ROOMS[i][0] === name){
+                        return true;
+                }
+        }
+        return false;
+}
+
+function roomNumber(name){
+        var i;
+        for(i=0; i<ROOMS.length; i++){
+                if(ROOMS[i][0] === name){
+                        return i;
+                }
+        }
+}
+
 function stringSplit(s){
-        dataIn = s.toString().split('\n');
+        dataIn = s.toString().split(/\s/);
         console.log("Data Successfully Split");
         return dataIn;
 
