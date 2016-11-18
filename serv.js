@@ -6,7 +6,7 @@ var ADDRESS = ip.address();
 var SID = 13325208;
 
 var ROOMS = new Array(5); //this will be an array of arrays, the first element of each contains the room name
-ROOMS = [[],[],[],[],[]];
+ROOMS = [['x'],['x'],['x'],['x'],['x'],['x'],['x'],['x'],['x'],['x'],['x'],['x'],['x'],['x'],['x'],['x'],['x'],['x'],['x']];
 var SOCKETS = new Array();
 var CLIENTS = new Array(); 
 
@@ -23,12 +23,13 @@ server.on("connection", function(socket) {
         socket.on("data", function(d) {
                 console.log("Client data: %s", d);
                 s = d;
+                dataIn = stringSplit(s);
+
                 if(d === "KILL_SERVICE\n"){
                         socket.destroy();
                 }
 
                 else if(d.includes("JOIN_CHATROOM:")){
-                        dataIn = stringSplit(s);
                         console.log('\n\n\n\n\n\n'+dataIn);
                         //TEST Print out received data
                         //will soon move to be above the 'IFs' to reduce code
@@ -37,26 +38,30 @@ server.on("connection", function(socket) {
                         //         i++;
                         // }
                         temp = dataIn[1].toString();
+                        socket.name = dataIn[7].toString();
+                        console.log(socket.name);
                         if(!roomExists(temp)){
                                 ROOMS[0].push(temp);
                                 console.log(ROOMS);
                                 //ROOMS.push(socket);
                                 //console.log(ROOMS);
-                                len = ROOMS[0].indexOf(temp);
-                                console.log(len);
                                 ROOMS[0].push(socket);
                                 console.log("IF Statement \n\n")
                                 console.log(ROOMS);
 
+                                socket.write("JOINED_CHATROOM: " + temp "\n"
+                                                + "SERVER_IP: " + ip + "\n"
+                                                + "PORT: " + PORT + "\n"
+                                                + "ROOM_REF")
                                 //ROOMS[ROOMS.indexOf(temp)].push(socket);
                         }
-                        // else{
-                        //         ROOMS[roomNumber(temp)].push(socket);
-                        //         console.log("Else Statement\n\n");
-                        //         console.log(ROOMS);
-                        // }
+                        else{
+                                ROOMS[roomNumber(temp)].push(socket);
+                        }
+                }
 
-
+                else if(dataIn[6].includes("MESSAGE: ")){
+                        var rID = dataIn[1];
 
                 }
 	
@@ -93,7 +98,7 @@ server.listen(PORT, ADDRESS, function() {
 function roomExists(name){
         var i;
         var tmp;
-        for(i = 0; i < ROOMS.length; i++){
+        for(i = 0; i <= ROOMS.length; i++){
                 if(ROOMS[i][0] === name){
                         return true;
                 }
@@ -103,11 +108,21 @@ function roomExists(name){
 
 function roomNumber(name){
         var i;
-        for(i=0; i<ROOMS.length; i++){
+        for(i=0; i<=ROOMS.length; i++){
                 if(ROOMS[i][0] === name){
                         return i;
                 }
         }
+}
+
+function isEmpty(){
+        var i;
+        for(i=0;i<=ROOMS.length;i++){
+                if(ROOM[i][0] === 'x'){
+                        return i;
+                }
+        }        
+        return -1;
 }
 
 function stringSplit(s){
