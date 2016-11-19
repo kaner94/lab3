@@ -52,7 +52,7 @@ server.on("connection", function(socket) {
                                 socket.write("JOINED_CHATROOM: " + temp "\n"
                                                 + "SERVER_IP: " + ip + "\n"
                                                 + "PORT: " + PORT + "\n"
-                                                + "ROOM_REF")
+                                                + "ROOM_REF");
                                 //ROOMS[ROOMS.indexOf(temp)].push(socket);
                         }
                         else{
@@ -62,6 +62,15 @@ server.on("connection", function(socket) {
 
                 else if(dataIn[6].includes("MESSAGE: ")){
                         var rID = dataIn[1];
+                        var room = ROOMS[roomNumber(rID)];
+                        var j;
+                        var sock;
+                        for(j=1; j<=room.length; j++){
+                                sock = room[j];
+                                sock.write("CHAT: " + room[0] "\n"
+                                                + "CLIENT_NAME: " + sock.name + "\n"
+                                                + "MESSAGE: " + dataIn[7] + "\n\n");
+                        }
 
                 }
 	
