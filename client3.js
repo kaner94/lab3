@@ -11,7 +11,7 @@ socket.connect(PORT, HOST, function(){
         socket.write("JOIN_CHATROOM: Room1\n" + 
         				"CLIENT_IP: 192.168.0.13\n" +
         				"PORT: 5000\n" +
-        				"CLIENT_NAME: testingName"
+        				"CLIENT_NAME: laurabae"
         			);
 });
 
@@ -22,15 +22,3 @@ socket.on('data', function(data){
 socket.on('close', function() {
         console.log('Thanks for coming, see ya soon!');
 });
-
-
-
-
-
-
-
-
-
-
-
-

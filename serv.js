@@ -40,9 +40,9 @@ server.on("connection", function(socket) {
                         //         console.log("Element "+i+": " + dataIn[i]);
                         //         i++;
                         // }
-                        temp = dataIn[2].toString();
+                        temp = dataIn[1].toString();
                         console.log("DEBUG \n please work \n" + dataIn + "\n\n");
-                        socket.name = dataIn[14].toString();
+                        socket.name = dataIn[7].toString();
                         console.log(socket.name);
                         if(!roomExists(temp)){
                                 ROOMS[roomsOpen][0] = temp;
@@ -63,9 +63,39 @@ server.on("connection", function(socket) {
                                                 + "SERVER_IP: " + "192.168.0.13" + "\n"
                                                 + "PORT: " + PORT + "\n"
                                                 + "ROOM_REF: " + ref + "\n"
-                                                + "JOIN_ID: " + joinID + "\n\n");
+                                                + "JOIN_ID: " + joinID + "\n");
 
                                 console.log("End of write");
+                                console.log("End of write");
+                                console.log(ref);
+                                console.log(ROOMS[ref]);
+
+
+                                //ROOMS[ref].forEach(socket =>  socket.write("CHAT:" + ref + "\n"
+                                //                              + "CLIENT_NAME:" + dataIn[7] + "\n"
+                                //                              + "MESSAGE:" + dataIn[7] + " has joined the room\n"));
+
+                                var toWrite = "CHAT:" + ref + "\n"
+                                                       + "CLIENT_NAME:" + dataIn[7] + "\n"
+                                                       + "MESSAGE:" + dataIn[7] + " has joined this chatroom.\n";
+
+                                console.log("\n\n\n\n\n" + toWrite + "\n\n\n\n\n\n");
+
+                                var thisRoom = new Array();
+                                thisRoom = ROOMS[ref];
+                                var l;
+                                var thisSock;
+                                for(l=1; l<thisRoom.length; l++){
+                                        thisSock = thisRoom[l];
+                                        thisSock.write(toWrite);
+                                }
+
+
+
+
+                                //socket.write("CHAT: " + ref + "\n" + dataIn[7] + " has joined the chat");
+
+
                         }
                         else{
                                 var thisRoom = new Array();
@@ -74,7 +104,7 @@ server.on("connection", function(socket) {
                                 var thisSock;
                                 for(k=1; k<thisRoom.length; k++){
                                         thisSock = thisRoom[k];
-                                        thisSock.write(dataIn[14] + " has joined the CHATROOM BABY");
+                                        thisSock.write(dataIn[7] + " has joined the CHATROOM BABY");
                                 }
                                 ROOMS[roomNumber(temp)].push(socket);
                                 joinID++;
@@ -87,15 +117,25 @@ server.on("connection", function(socket) {
                        }
                 }
 
-                else if(d.includes("MESSAGE: ")){
-                        var rID = dataIn[2];
+                else if(d.includes("MESSAGE:")){
+                        console.log(dataIn);
+                        var rID = dataIn[1];
+
+                        console.log("RID: " + rID);
+
                         var room = new Array();
-                        room = ROOMS[roomNumber(rID)];
+                        
+                        console.log(roomNumber(rID));
+
+                        room = ROOMS[rID];
+                        console.log("xxxxxxxxx\n\n");
+                        console.log(room);
+                        console.log("\n\nxxxxxxxxx");
                         var j;
                         var sock;
-                        for(j=1; j<=room.length; j++){
+                        for(j=1; j<room.length; j++){
                                 sock = room[j];
-                                sock.write("CHAT: " + room[0] + "\n"
+                                sock.write("\n\nCHAT: " + room[0] + "\n"
                                                 + "CLIENT_NAME: " + sock.name + "\n"
                                                 + "MESSAGE: " + dataIn[7] + "\n\n");
                         }
@@ -111,14 +151,14 @@ server.on("connection", function(socket) {
 
         });
 
-        // socket.on("close", function() {
-        //         console.log("Connection has been closed from %s", remoteAddress);
-        //         server.close();
-        // });
+        socket.on("close", function() {
+                console.log("Connection has been closed from %s", remoteAddress);
+                server.close();
+        });
 
-        // socket.on("error", function(err){
+        socket.on("error", function(err){
                 
-        // });
+        });
 
 });
 
@@ -153,7 +193,7 @@ function roomExists(name){
 
 function roomNumber(name){
         var i;
-        for(i=0; i<=ROOMS.length; i++){
+        for(i=0; i < ROOMS.length; i++){
                 if(ROOMS[i][0] === name){
                         return i;
                 }
@@ -162,7 +202,7 @@ function roomNumber(name){
 
 function isEmpty(){
         var i;
-        for(i=0;i<=ROOMS.length;i++){
+        for(i=0;i < ROOMS.length;i++){
                 if(ROOM[i][0] === 'x'){
                         return i;
                 }
@@ -170,8 +210,12 @@ function isEmpty(){
         return -1;
 }
 
+function makeMessage(){
+
+}
+
 function stringSplit(s){
-        dataIn = s.toString().split(/(\:|\s)/);
+        dataIn = s.toString().split(/\s/);
         console.log("Data Successfully Split");
         console.log(dataIn);
         return dataIn;
