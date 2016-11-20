@@ -43,7 +43,7 @@ server.on("connection", function(socket) {
                                 roomsOpen++;
                                 joinID++;
                                 socket.write("JOINED_CHATROOM: " + temp + "\n"
-                                                + "SERVER_IP: " + "192.168.0.13" + "\n"
+                                                + "SERVER_IP: " + ADDRESS + "\n"
                                                 + "PORT: " + PORT + "\n"
                                                 + "ROOM_REF: " + ref + "\n"
                                                 + "JOIN_ID: " + joinID + "\n");
@@ -68,7 +68,7 @@ server.on("connection", function(socket) {
                                 joinID++;
                                 ref = roomNumber(temp);
                                 socket.write("JOINED_CHATROOM: " + temp + "\n"
-                                                + "SERVER_IP: " + "192.168.0.13" + "\n"
+                                                + "SERVER_IP: " + ADDRESS + "\n"
                                                 + "PORT: " + PORT + "\n"
                                                 + "ROOM_REF: " + ref + "\n"
                                                 + "JOIN_ID: " + joinID + "\n");
