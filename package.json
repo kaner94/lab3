@@ -15,5 +15,8 @@
   "bugs": {
     "url": "https://github.com/kaner94/lab3/issues"
   },
-  "homepage": "https://github.com/kaner94/lab3#readme"
+  "homepage": "https://github.com/kaner94/lab3#readme",
+  "dependencies": {
+    "ip": "^1.1.4"
+  }
 }
