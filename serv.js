@@ -17,7 +17,7 @@ var roomToJoin;
 var roomsOpen = 0;
 var joinID = 0;
 var ref;
-
+var tempSock = new net.Socket();
 
 server.on("connection", function(socket) {
         var remoteAddress = socket.remoteAddress + ":" + socket.remotePort;
@@ -46,13 +46,8 @@ server.on("connection", function(socket) {
                         console.log(socket.name);
                         if(!roomExists(temp)){
                                 ROOMS[roomsOpen][0] = temp;
-                                console.log(ROOMS);
-
-
                                 ROOMS[roomsOpen].push(socket);
-                                
                                 ref = roomNumber(temp);
-
                                 roomsOpen++;
                                 joinID++;
 
@@ -64,22 +59,17 @@ server.on("connection", function(socket) {
                                                 + "PORT: " + PORT + "\n"
                                                 + "ROOM_REF: " + ref + "\n"
                                                 + "JOIN_ID: " + joinID + "\n");
-
+                                socket.end();
                                 console.log("End of write");
-                                console.log("End of write");
-                                console.log(ref);
-                                console.log(ROOMS[ref]);
-
-
-                                //ROOMS[ref].forEach(socket =>  socket.write("CHAT:" + ref + "\n"
-                                //                              + "CLIENT_NAME:" + dataIn[7] + "\n"
-                                //                              + "MESSAGE:" + dataIn[7] + " has joined the room\n"));
-
+                                
+                        
                                 var toWrite = "CHAT:" + ref + "\n"
-                                                       + "CLIENT_NAME:" + dataIn[7] + "\n"
-                                                       + "MESSAGE:" + dataIn[7] + " has joined this chatroom.\n";
+                                                + "CLIENT_NAME:" + dataIn[7] + "\n"
+                                                + "MESSAGE:" + dataIn[7] + " has joined this chatroom.\n";
 
-                                console.log("\n\n\n\n\n" + toWrite + "\n\n\n\n\n\n");
+
+                                console.log("\n\n\n" + "________________________ THE CHATROOMS _________________________\n");
+                                printRooms();
 
                                 var thisRoom = new Array();
                                 thisRoom = ROOMS[ref];
@@ -89,12 +79,6 @@ server.on("connection", function(socket) {
                                         thisSock = thisRoom[l];
                                         thisSock.write(toWrite);
                                 }
-
-
-
-
-                                //socket.write("CHAT: " + ref + "\n" + dataIn[7] + " has joined the chat");
-
 
                         }
                         else{
@@ -107,6 +91,11 @@ server.on("connection", function(socket) {
                                         thisSock.write(dataIn[7] + " has joined the CHATROOM BABY");
                                 }
                                 ROOMS[roomNumber(temp)].push(socket);
+                                
+                                console.log("\n\n\n" + "________________________ THE CHATROOMS _________________________\n");
+                                //console.log(ROOMS);
+                                printRooms();
+
                                 joinID++;
                                 ref = roomNumber(temp);
                                 socket.write("JOINED_CHATROOM: " + temp + "\n"
@@ -141,11 +130,46 @@ server.on("connection", function(socket) {
                         }
                 }
 
-                else if(dataIn[0].includes("LEAVE_CHATROOM: ")){
+                else if(dataIn[0].includes("LEAVE_CHATROOM:")){
+                        console.log("\n\nEntering Leave loop\n\n" + ROOMS);
+                        var ID = dataIn[1];
+                        var room = ROOMS[ID];
+                        console.log("\n\nLEAVE LOOP: \n" + ID + "\nLEAVE LOOP");
+                        console.log("\n\nLEAVE LOOP: \n" + room + "\nLEAVE LOOP");
+                        var n;
+                        var sock;
 
+                        console.log("\n\n\nTesting socket" + socket + "\n\n\nTesting socket");
+                        socket.write("LEFT_CHATROOM: " + ID +"\n"
+                                      + "JOIN_ID: " + dataIn[3] + "\n"
+                                      + "CLIENT_NAME: " + dataIn[5] + "\n");
+
+                        for(n=1; n<room.length; n++){
+                                console.log("\nfor loop " + n);
+
+                                tempSock = room[n];
+
+                                console.log("\n\n"+sock);
+                                if(tempSock.name === dataIn[5].toString()){
+                                        ROOMS[ID].splice(n, 1);
+                                        console.log("\n\n\n" + "________________________ THE CHATROOMS _________________________\n");
+                                        printRooms();
+                                        tempSock.write("LEFT_CHATROOM: " + ID +"\n"
+                                                        + "JOIN_ID: " + dataIn[3] + "\n");
+                                }
+                        }
+
+                        room = ROOMS[ID];
+                        for(n=1; n<room.length; n++){
+                                sock = room[n];
+                                sock.write("CHAT: " + ID + "\n"
+                                                + "CLIENT_ID: " + dataIn[5] + "\n"
+                                                + "MESSAGE: " + dataIn[5] + " has left this chatroom.\n");
+                        }
                 }
 
-		else {
+
+		else if(d.includes("HELO")){
                         socket.write(d+"IP:"+ socket.address().address +"\nPort:"+ PORT + "\nStudentID:"+ SID +"\n");
 		}		
 
@@ -153,7 +177,6 @@ server.on("connection", function(socket) {
 
         socket.on("close", function() {
                 console.log("Connection has been closed from %s", remoteAddress);
-                server.close();
         });
 
         socket.on("error", function(err){
@@ -210,10 +233,6 @@ function isEmpty(){
         return -1;
 }
 
-function makeMessage(){
-
-}
-
 function stringSplit(s){
         dataIn = s.toString().split(/\s/);
         console.log("Data Successfully Split");
@@ -222,4 +241,13 @@ function stringSplit(s){
 
 }
 
+function printRooms(){
+        var i, j;
+        for(i=0; i<ROOMS.length; i++){
+                console.log("ROOM "+i+": ");
+                for(j=1; j<ROOMS[i].length; j++){
+                        console.log(ROOMS[i][j].name +", ");
+                }
+        }
+}
 
