@@ -87,21 +87,25 @@ server.on("connection", function(socket) {
                                                 + "SERVER_IP: " + "192.168.0.13" + "\n"
                                                 + "PORT: " + PORT + "\n"
                                                 + "ROOM_REF: " + ref + "\n"
-                                                + "JOIN_ID: " + joinID + "\n\n");
+                                                + "JOIN_ID: " + joinID + "\n");
                                 ROOMS[roomNumber(temp)].push(socket);
-                                
+
                                 console.log("\nElse statement post push");
                                 console.log("\n\n\n" + "________________________ THE CHATROOMS _________________________\n");
                                 printRooms();
+                                console.log(socket);
 
-                                //joinID++;
-                                //ref = roomNumber(temp);
-                                //socket.write("JOINED_CHATROOM: " + temp + "\n"
-                                //                + "SERVER_IP: " + "192.168.0.13" + "\n"
-                                //                + "PORT: " + PORT + "\n"
-                                //                + "ROOM_REF: " + ref + "\n"
-                                //                + "JOIN_ID: " + joinID + "\n\n");
-                       }
+                                var thisRoom = new Array();
+                                thisRoom = ROOMS[ref];
+                                var l;
+                                var thisSock;
+                                for(l=1; l<thisRoom.length; l++){
+                                        thisSock = thisRoom[l];
+                                        thisSock.write("CHAT: "+ ref + "\n"
+                                                        + "CLIENT_NAME: " + thisSock.name + "\n"
+                                                        + "MESSAGE: " + thisSock.name +" has joined the chatroom.\n\n");
+                                }
+                        }
                 }
 
 
@@ -154,7 +158,7 @@ server.on("connection", function(socket) {
                                         console.log("________________________ THE CHATROOMS _________________________\n");
                                         printRooms();
 
-                                        socket.end();
+                                       // socket.end();
 
                                 }
                         }
