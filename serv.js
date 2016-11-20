@@ -146,7 +146,7 @@ server.on("connection", function(socket) {
                                         printRooms();
                                         tempSock.write("CHAT: " + ID +"\n"
                                                         + "CLIENT_NAME: " + dataIn[5] + "\n"
-                                                        + "MESSAGE: " + dataIn[5] + " has left this chatroom.\n");
+                                                        + "MESSAGE: " + dataIn[5] + " has left this chatroom.\n\n");
                                         ROOMS[ID].splice(n, 1);
                                         console.log("\n------------------------------------------------------------------------------");
                                         console.log("|                               Room spliced                                 |");
