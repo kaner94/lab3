@@ -62,7 +62,6 @@ server.on("connection", function(socket) {
                                                 + "MESSAGE:" + dataIn[7] + " has joined this chatroom.\n\n";
 
 
-                                console.log("\n\n\n" + "________________________ THE CHATROOMS _________________________\n");
                                 printRooms();
 
                                 var thisRoom = new Array();
@@ -91,7 +90,6 @@ server.on("connection", function(socket) {
                                 ROOMS[roomNumber(temp)].push(socket);
 
                                 console.log("\nElse statement post push");
-                                console.log("\n\n\n" + "________________________ THE CHATROOMS _________________________\n");
                                 printRooms();
                                 console.log(socket);
 
@@ -146,7 +144,6 @@ server.on("connection", function(socket) {
                         for(n=1; n<room.length; n++){
                                 tempSock = room[n];
                                 if(tempSock.name === dataIn[5].toString()){
-                                        console.log("\n\n\n" + "________________________ THE CHATROOMS _________________________\n");
                                         printRooms();
                                         tempSock.write("CHAT: " + ID +"\n"
                                                         + "CLIENT_NAME: " + dataIn[5] + "\n"
@@ -155,11 +152,7 @@ server.on("connection", function(socket) {
                                         console.log("\n------------------------------------------------------------------------------");
                                         console.log("|                               Room spliced                                 |");
                                         console.log("-------------------------------------------------------------------------------\n\n");
-                                        console.log("________________________ THE CHATROOMS _________________________\n");
                                         printRooms();
-
-                                       // socket.end();
-
                                 }
                         }
                 }
@@ -239,6 +232,7 @@ function stringSplit(s){
 
 function printRooms(){
         var i, j;
+        console.log("________________________ THE CHATROOMS _________________________\n");
         for(i=0; i<ROOMS.length; i++){
                 console.log("ROOM "+i+": ");
                 for(j=1; j<ROOMS[i].length; j++){
