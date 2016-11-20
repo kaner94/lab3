@@ -127,7 +127,7 @@ server.on("connection", function(socket) {
                         var sock;
                         for(j=1; j<room.length; j++){
                                 sock = room[j];
-                                sock.write("\n\nCHAT: " + room[0] + "\n"
+                                sock.write("CHAT: " + room[0] + "\n"
                                                 + "CLIENT_NAME: " + sock.name + "\n"
                                                 + "MESSAGE: " + dataIn[7] + "\n\n");
                         }
@@ -246,4 +246,6 @@ function printRooms(){
                 }
         }
 }
+
+
 
