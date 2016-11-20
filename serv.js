@@ -34,34 +34,19 @@ server.on("connection", function(socket) {
 
                 else if(d.includes("JOIN_CHATROOM:")){
                         temp = dataIn[1].toString();
-                        console.log("DEBUG \n please work \n" + dataIn + "\n\n");
                         socket.name = dataIn[7].toString();
                         console.log(socket.name);
                         if(!roomExists(temp)){
-                                
                                 ROOMS[roomsOpen][0] = temp;
                                 ROOMS[roomsOpen].push(socket);
                                 ref = roomNumber(temp);
                                 roomsOpen++;
                                 joinID++;
-
-                                console.log("IF Statement \n\n")
-                                console.log(ROOMS);
-
                                 socket.write("JOINED_CHATROOM: " + temp + "\n"
                                                 + "SERVER_IP: " + "192.168.0.13" + "\n"
                                                 + "PORT: " + PORT + "\n"
                                                 + "ROOM_REF: " + ref + "\n"
                                                 + "JOIN_ID: " + joinID + "\n");
-                                socket.end();
-                                console.log("End of write");
-                                
-                        
-                                var toWrite = "CHAT:" + ref + "\n"
-                                                + "CLIENT_NAME:" + dataIn[7] + "\n"
-                                                + "MESSAGE:" + dataIn[7] + " has joined this chatroom.\n\n";
-
-
                                 printRooms();
 
                                 var thisRoom = new Array();
@@ -70,12 +55,12 @@ server.on("connection", function(socket) {
                                 var thisSock;
                                 for(l=1; l<thisRoom.length; l++){
                                         thisSock = thisRoom[l];
-                                        thisSock.write(toWrite);
+                                        thisSock.write("CHAT:" + ref + "\n"
+                                                + "CLIENT_NAME:" + dataIn[7] + "\n"
+                                                + "MESSAGE:" + dataIn[7] + " has joined this chatroom.\n\n";);
                                 }
-
                         }
                         else{
-                                console.log("\n\n\nJOINING MULTIPLE ROOMS\n\n\n");
                                 var thisRoom = new Array();
                                 var k;
                                 var thisSock;
@@ -88,11 +73,7 @@ server.on("connection", function(socket) {
                                                 + "ROOM_REF: " + ref + "\n"
                                                 + "JOIN_ID: " + joinID + "\n");
                                 ROOMS[roomNumber(temp)].push(socket);
-
-                                console.log("\nElse statement post push");
                                 printRooms();
-                                console.log(socket);
-
                                 var thisRoom = new Array();
                                 thisRoom = ROOMS[ref];
                                 var l;
@@ -106,17 +87,12 @@ server.on("connection", function(socket) {
                         }
                 }
 
-
                 else if(d.includes("MESSAGE:")){
                         console.log(dataIn);
                         var rID = dataIn[1];
-
                         console.log("RID: " + rID);
-
                         var room = new Array();
-                        
                         console.log(roomNumber(rID));
-
                         room = ROOMS[rID];
                         console.log("xxxxxxxxx\n\n");
                         console.log(room);
@@ -137,10 +113,8 @@ server.on("connection", function(socket) {
                         var room = ROOMS[ID];
                         var n;
                         var sock;
-
                         socket.write("LEFT_CHATROOM: " + ID +"\n"
                                       + "JOIN_ID: " + dataIn[3] + "\n");
-
                         for(n=1; n<room.length; n++){
                                 tempSock = room[n];
                                 if(tempSock.name === dataIn[5].toString()){
@@ -150,13 +124,12 @@ server.on("connection", function(socket) {
                                                         + "MESSAGE: " + dataIn[5] + " has left this chatroom.\n\n");
                                         ROOMS[ID].splice(n, 1);
                                         console.log("\n------------------------------------------------------------------------------");
-                                        console.log("|                               Room spliced                                 |");
+                                        console.log("|                               Room spliced                                   |");
                                         console.log("-------------------------------------------------------------------------------\n\n");
                                         printRooms();
                                 }
                         }
                 }
-
 
 		else if(d.includes("HELO")){
                         socket.write(d+"IP:"+ socket.address().address +"\nPort:"+ PORT + "\nStudentID:"+ SID +"\n");
