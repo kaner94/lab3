@@ -1,0 +1,19 @@
+{
+  "name": "lab3",
+  "version": "1.0.0",
+  "description": "chatserver",
+  "main": "serv.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kaner94/lab3.git"
+  },
+  "author": "Ryan Kane - 1332 5208",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/kaner94/lab3/issues"
+  },
+  "homepage": "https://github.com/kaner94/lab3#readme"
+}
