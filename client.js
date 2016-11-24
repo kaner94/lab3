@@ -1,6 +1,6 @@
 var net = require('net');
 
-var PORT = 5000;
+var PORT = 7060;
 var HOST = '192.168.0.13';
 
 var socket = new net.Socket();
@@ -16,7 +16,7 @@ socket.connect(PORT, HOST, function(){
 });
 
 socket.on('data', function(data){
-        console.log("Received: " + data);
+        console.log("Received: \n" + data);
 });
 
 socket.on('close', function() {

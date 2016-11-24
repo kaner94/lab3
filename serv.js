@@ -5,11 +5,9 @@ var PORT = process.argv[2] || 5000;
 var ADDRESS = ip.address();
 var SID = 13325208;
 
- //this will be an array of arrays, the first element of each contains the room name
-var ROOMS = [[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[]];
+var ROOMS = [[],[],[],[],[],[],[],[]];
 var SOCKETS = new Array();
 var CLIENTS = new Array(); 
-
 var temp;
 var len;
 var dataIn = new Array();
@@ -123,11 +121,7 @@ server.on("connection", function(socket) {
                                 tempSock.write("CHAT: " + ID +"\n"
                                                 + "CLIENT_NAME: " + dataIn[5] + "\n"
                                                 + "MESSAGE: " + dataIn[5] + " has left this chatroom.\n\n");
-                                console.log("\n------------------------------------------------------------------------------");
-                                console.log("|                               Room spliced                                   |");
-                                console.log("-------------------------------------------------------------------------------\n\n");
-                                printRooms();
-                                
+                                printRooms();  
                         }
                         for(n=1; n<room.length; n++){
                                 tempSock = room[n];
@@ -138,7 +132,30 @@ server.on("connection", function(socket) {
                 }
 
                 else if(dataIn[0].includes("DISCONNECT:")){
-                        socket.end();
+                    var name = dataIn[5];
+                    var sock;
+                    for(i=0; i<ROOMS.length; i++){
+                        
+                        for(j=1;j<ROOMS[i].length;j++){
+
+                            if(ROOMS[i][j].name === name){
+                        
+                                for(k = 1; k<ROOMS[i].length; k++){
+                            
+                                    sock = ROOMS[i][k];
+                        
+                                    sock.write("CHAT: " + i + "\n"
+                                                + "CLIENT_NAME: " + name + "\n"
+                                                + "MESSAGE: " + name + " has left this chatroom. \n\n")
+                                }
+                                ROOMS[i].splice(j, 1);
+                                printRooms();
+                            }
+                        }
+                    }
+
+
+                    socket.end();
                 }
 
 		else if(d.includes("HELO")){
